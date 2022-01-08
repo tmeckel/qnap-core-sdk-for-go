@@ -80,6 +80,7 @@ type Application struct {
 	ID          string `xml:"id" json:"id" yaml:"id"`
 	DisplayName string `xml:"displayName" json:"displayName" yaml:"displayName"`
 }
+
 type ApplicationState struct {
 	Application        `yaml:",inline"`
 	Date               string `xml:"date" json:"date" yaml:"date"`
@@ -179,6 +180,7 @@ type qdocApplicationStatus struct {
 }
 
 type applicationTaskStatusReponse struct {
+	autorest.Response
 	IsRunning       bool
 	Name            string
 	DisplayName     string

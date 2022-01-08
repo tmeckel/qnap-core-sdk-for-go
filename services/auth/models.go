@@ -47,8 +47,9 @@ type qdocRoot struct {
 
 type LoginResponse struct {
 	autorest.Response
-	Sid       string
-	IsAdmin   bool
-	Username  string
-	Groupname string
+	AuthPassed int
+	Sid        string
+	IsAdmin    bool
+	Username   string
+	Groupname  string
 }

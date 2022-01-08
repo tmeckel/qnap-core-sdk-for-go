@@ -8,7 +8,6 @@ import (
 	"net/url"
 
 	"github.com/Azure/go-autorest/autorest"
-	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/Azure/go-autorest/tracing"
 )
 
@@ -26,7 +25,7 @@ func NewClientWithBaseURI(baseURI string) Client {
 	return Client{NewWithBaseURI(baseURI)}
 }
 
-func (client Client) Login(ctx context.Context, username string, password string) (result LoginResponse, err error) {
+func (client Client) Login(ctx context.Context, username, password string) (result LoginResponse, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/Client.Login")
 		defer func() {
@@ -60,7 +59,7 @@ func (client Client) Login(ctx context.Context, username string, password string
 	return
 }
 
-func (client Client) LoginPreparer(ctx context.Context, username string, password string) (*http.Request, error) {
+func (client Client) LoginPreparer(ctx context.Context, username, password string) (*http.Request, error) {
 	secret := b64.StdEncoding.EncodeToString([]byte(password))
 
 	preparer := autorest.CreatePreparer(
@@ -82,7 +81,7 @@ func (client Client) LoginResponder(resp *http.Response) (result LoginResponse, 
 
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -90,8 +89,10 @@ func (client Client) LoginResponder(resp *http.Response) (result LoginResponse, 
 		return
 	}
 
-	if doc.AuthPassed != 1 {
-		return result, fmt.Errorf("login failed")
+	result.Response = autorest.Response{Response: resp}
+	result.AuthPassed = doc.AuthPassed
+	if doc.AuthPassed == 0 {
+		return
 	}
 
 	result.Sid = doc.AuthSid
@@ -156,7 +157,7 @@ func (client Client) LogoutResponder(resp *http.Response) (err error) {
 	var doc qdocRoot
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 

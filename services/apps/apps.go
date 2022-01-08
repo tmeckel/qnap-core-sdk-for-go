@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/Azure/go-autorest/autorest"
-	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/Azure/go-autorest/tracing"
 )
 
@@ -80,7 +79,7 @@ func (client Client) ListResponder(resp *http.Response) (result ListResponse, er
 	var doc qdocAppList
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -202,7 +201,7 @@ func (client Client) ListStatesResponder(resp *http.Response) (result StatesResp
 	var doc qdocAppList
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -210,6 +209,7 @@ func (client Client) ListStatesResponder(resp *http.Response) (result StatesResp
 		return
 	}
 
+	result.Response = autorest.Response{Response: resp}
 	if doc.AuthPassed != 1 {
 		err = fmt.Errorf("unauthorized")
 		return
@@ -309,7 +309,7 @@ func (client Client) StartResponder(resp *http.Response) (err error) {
 	var doc qdocAppOp
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -398,7 +398,7 @@ func (client Client) StopResponder(resp *http.Response) (err error) {
 	var doc qdocAppOp
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -467,7 +467,7 @@ func (client Client) getAppTaskStatusResponder(resp *http.Response) (result appl
 	var doc qdocApplicationStatus
 	err = autorest.Respond(
 		resp,
-		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.WithErrorUnlessStatusCode(http.StatusOK),
 		autorest.ByUnmarshallingXML(&doc),
 		autorest.ByClosing())
 
@@ -475,6 +475,7 @@ func (client Client) getAppTaskStatusResponder(resp *http.Response) (result appl
 		return
 	}
 
+	result.Response = autorest.Response{Response: resp}
 	if doc.AuthPassed != 1 {
 		err = fmt.Errorf("unauthorized")
 		return
